@@ -3,7 +3,7 @@ ESP32 base 2WD CAR Project
 
 ## 앱을 만들기위한 준비
 
-![MIT APP](http://appinventor.mit.edu/explore/ai2/setup)
+[MIT APP Inventor 설정](http://appinventor.mit.edu/explore/ai2/setup)
 1. 앱 스토아에서 MIT App Inventor 컴패니언 앱을 설치  
 2. WIFI환경이 없을때는 USB-Phone 케이블 필요  
 
