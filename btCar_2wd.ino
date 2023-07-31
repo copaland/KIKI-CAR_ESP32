@@ -1,14 +1,10 @@
 #include <BluetoothSerial.h>
-//#include "camera_interface.h"
-//#include "soc/soc.h"
-//#include "soc/rtc_cntl_reg.h"
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
 BluetoothSerial SerialBT;
-#define PACKET_SIZE 64
 
 #define IN1 32
 #define IN2 33
@@ -17,13 +13,9 @@ BluetoothSerial SerialBT;
 #define ASLEEP 25
 #define BSLEEP 26
 
-byte *frame;
-
 void setup() 
 {
-  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector 
   Serial.begin(115200);
-  
   SerialBT.begin("BluetoothCar");
   Serial.println("Bluetooth enabled.");
 
@@ -40,15 +32,6 @@ void setup()
   Serial.println("Motor pins enabled.");
 
   delay(1000);
-
-  //ESP_CAMERA::init_camera();
-  //frame = (byte *)malloc(20000);
-
-  //Serial.println("Camera initialized.");
-
-  //delay(1000);
-
-  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 1); //enable brownout detector
 }
 
 void loop() 
@@ -80,12 +63,6 @@ void loop()
           break;
       }
   }
-
-  //int bytes = ESP_CAMERA::get_frame(frame);
-  //if (bytes > 0)
-  //{
-  //  writeBytes(frame, bytes);
-  //}
 }
 
 void stop()
@@ -131,28 +108,4 @@ void right()
 
     digitalWrite(IN3, LOW);
     digitalWrite(IN4, HIGH);
-}
-
-void writeBytes(byte message[], int len)
-{
-  byte msg[PACKET_SIZE] = {0};
-  int i = 0;
-  if (len > PACKET_SIZE)
-  {
-    for (i = 0; i < int(len / PACKET_SIZE); i++)
-    {
-      memcpy(msg, message + (i * PACKET_SIZE), PACKET_SIZE);
-      SerialBT.write(msg, PACKET_SIZE);
-    }
-    
-    if (i * PACKET_SIZE < len)
-    {
-      memcpy(msg, message + (i * PACKET_SIZE), len - (i * PACKET_SIZE));
-      SerialBT.write(msg, PACKET_SIZE);
-    }
-  } else
-  {
-    memcpy(msg, message, PACKET_SIZE);
-    SerialBT.write(msg, PACKET_SIZE);
-  }
 }
