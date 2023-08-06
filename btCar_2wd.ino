@@ -6,13 +6,15 @@
 
 BluetoothSerial SerialBT;
 
-#define IN1 32
-#define IN2 33
-#define IN3 34
-#define IN4 35
-#define ASLEEP 25
-#define BSLEEP 26
+#define IN1 33    //a1 M1
+#define IN2 25    //a2 M1
+#define ASLEEP 32 //a3 M1
 
+#define IN3 27    //b1 M2
+#define IN4 14    //b2 M2
+#define BSLEEP 26 //b3 M2
+
+int speed = 2500; //4096/100*80
 void setup() 
 {
   Serial.begin(115200);
@@ -25,13 +27,14 @@ void setup()
   pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
-  pinMode(IN4, OUTPUT);
+
   pinMode(ASLEEP, OUTPUT);
   pinMode(BSLEEP, OUTPUT);
 
   Serial.println("Motor pins enabled.");
 
   delay(1000);
+  //forward();
 }
 
 void loop() 
@@ -63,49 +66,61 @@ void loop()
           break;
       }
   }
+  asm("nop");
 }
 
 void stop()
 {
+    
     digitalWrite(IN1, LOW);
     digitalWrite(IN2, LOW);
-    
+    digitalWrite(ASLEEP, LOW); //high on
+
     digitalWrite(IN3, LOW);
     digitalWrite(IN4, LOW);
+    digitalWrite(BSLEEP, LOW);  
 }
 
 void forward()
 {
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, HIGH);
+    digitalWrite(IN1, LOW); //M2 FOWARD
+    analogWrite(IN2, speed);
+    digitalWrite(ASLEEP, HIGH); //high on
 
-    digitalWrite(IN3, HIGH);
-    digitalWrite(IN4, LOW);
+    digitalWrite(IN3, LOW); //M1
+    analogWrite(IN4, speed);
+    digitalWrite(BSLEEP, HIGH); //high on
 }
 
 void reverse()
 {
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
+    digitalWrite(IN1, speed); //M2 BACK
+    analogWrite(IN2, LOW);
+    digitalWrite(ASLEEP, HIGH); //high on
     
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, HIGH);
+    digitalWrite(IN3, speed); //M1 BACK
+    analogWrite(IN4, LOW);
+    digitalWrite(BSLEEP, HIGH); //high on
 }
 
 void left()
 {
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
-    
-    digitalWrite(IN3, HIGH);
+    digitalWrite(IN1, LOW); //M2 FOWARD
+    analogWrite(IN2, speed);
+    digitalWrite(ASLEEP, HIGH); //high on
+
+    digitalWrite(IN3, LOW);
     digitalWrite(IN4, LOW);
+    digitalWrite(BSLEEP, LOW); //high on
 }
 
 void right()
 {
     digitalWrite(IN1, LOW);
-    digitalWrite(IN2, HIGH);
+    digitalWrite(IN2, LOW);
+    digitalWrite(ASLEEP, LOW); //high on
 
     digitalWrite(IN3, LOW);
-    digitalWrite(IN4, HIGH);
+    analogWrite(IN4, speed);
+    digitalWrite(BSLEEP, HIGH); //high on
 }
