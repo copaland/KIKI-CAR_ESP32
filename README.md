@@ -1,5 +1,6 @@
 # KIKI-CAR_ESP32
 ESP32 base 2WD CAR Project
+Use motor drive chip DRV8837
 
 ## 앱을 만들기위한 준비
 
